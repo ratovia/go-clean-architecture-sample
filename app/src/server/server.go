@@ -10,7 +10,7 @@ import (
 
 type apiHandler func(*gin.Context) (int, interface{}, error)
 
-func RunServer(env string) {
+func RunServer(env string, port string) {
 	fmt.Printf("Running server in %s environment...\n", env)
 
 	// DBの初期化などの処理
@@ -26,6 +26,5 @@ func RunServer(env string) {
 	handleRootGroup(controller, router.Group("/"))
 
 	// サーバーの起動
-	port := ":8081"
-	log.Fatal(http.ListenAndServe(port, router))
+	log.Fatal(http.ListenAndServe(":" + port, router))
 }
