@@ -8,6 +8,8 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
+type apiHandler func(*gin.Context) (int, interface{}, error)
+
 func handleRootGroup(controller *Controller, group *gin.RouterGroup) {
 	itemController := controllers.NewItemController(controller)
 

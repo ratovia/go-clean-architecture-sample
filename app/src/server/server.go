@@ -7,8 +7,6 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-type apiHandler func(*gin.Context) (int, interface{}, error)
-
 func RunServer(env string, port string) {
 	// DBの初期化などの処理
 	db := InitializeDB()
