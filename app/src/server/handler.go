@@ -8,38 +8,22 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-type rootAPI struct {
-	path    string
-	method  string
-	handler apiHandler
-}
-
-func newRootAPI(path string, method string, handler apiHandler) *rootAPI {
-	return &rootAPI{
-		path:    path,
-		method:  method,
-		handler: handler,
-	}
-}
-
 func handleRootGroup(controller *Controller, group *gin.RouterGroup) {
 	itemController := controllers.NewItemController(controller)
 
 	apiV1 := group.Group("/v1")
 
-	get := http.MethodGet
+	registerHandler(apiV1, http.MethodGet, "/items", itemController.IndexItem)
+	registerHandler(apiV1, http.MethodPost, "/items", itemController.CreateItem)
+	registerHandler(apiV1, http.MethodDelete, "/items/:id", itemController.DeleteItem)
+	registerHandler(apiV1, http.MethodPut, "/items/:id", itemController.UpdateItem)
+}
 
-	apis := []*rootAPI{
-		newRootAPI("/items", get, itemController.IndexItem),
+func registerHandler(group *gin.RouterGroup, method string, path string, handler apiHandler) {
+	h := func(ctx *gin.Context) {
+		status, res, _ := handler(ctx)
+		ctx.JSON(status, res)
 	}
 
-	for _, a := range apis {
-		handler := a.handler
-		h := func(ctx *gin.Context) {
-			status, res, _ := handler(ctx)
-			ctx.JSON(status, res)
-		}
-
-		apiV1.Handle(a.method, a.path, h)
-	}
+	group.Handle(method, path, h)
 }

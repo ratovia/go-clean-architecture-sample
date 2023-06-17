@@ -53,19 +53,32 @@ func FindItemAll(db *gorm.DB) ([]entity.Item, error) {
 	return entityItems, nil
 }
 
-func UpdateItem(db *gorm.DB, eItem *entity.Item) error {
+func UpdateItem(db *gorm.DB, id uint, eItem *entity.Item) (*entity.Item, error) {
 	item := newItem(eItem)
+	item.ID = id
+
 	if err := db.Save(item).Error; err != nil {
-		return fmt.Errorf("failed to update item: %w", err)
+		return nil, fmt.Errorf("failed to update item: %w", err)
 	}
 
-	return nil
+	return item.toEntity(), nil
 }
 
-func CreateItem(db *gorm.DB, eItem *entity.Item) error {
+func CreateItem(db *gorm.DB, eItem *entity.Item) (*entity.Item, error) {
 	item := newItem(eItem)
+
 	if err := db.Create(item).Error; err != nil {
-		return fmt.Errorf("failed to create item: %w", err)
+		return nil, fmt.Errorf("failed to create item: %w", err)
+	}
+
+	return item.toEntity(), nil
+}
+
+func DeleteItem(db *gorm.DB, id uint) error {
+	item := &Item{Model: Model{ID: id}}
+
+	if err := db.Delete(item).Error; err != nil {
+		return fmt.Errorf("failed to delete item: %w", err)
 	}
 
 	return nil
