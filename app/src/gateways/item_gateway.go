@@ -3,8 +3,9 @@ package gateways
 import (
 	"fmt"
 
-	"gorm.io/gorm"
 	"ratovia/go-clean-architecture-sample/app/src/entity"
+
+	"gorm.io/gorm"
 )
 
 type Item struct {
